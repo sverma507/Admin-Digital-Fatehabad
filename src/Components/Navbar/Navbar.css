@@ -1,0 +1,26 @@
+.admin-outer{
+    padding: 20px;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid black;
+}
+
+.admin-logo{
+    font-weight: 900;
+    font-size: 25px;
+}
+
+.nav-items{
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-item:hover{
+    cursor: pointer;
+}
+
