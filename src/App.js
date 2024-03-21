@@ -8,16 +8,18 @@ import Addsubcategory from './Components/SubCategory/Addsubcategory'
 import AddListing from "./Components/Listing/AddListing";
 function App() {
   const [id,setId]=useState(null);
-  const [cate,setCate]=useState(null)
-  const [send_ref,setSend_ref]=useState(null)
+  const [cate,setCate]=useState(null);
+  const [lid,setLId]=useState(null);
+  const [lcate,setLcate]=useState(null);
+  const [send_ref,setSend_ref]=useState(null);
   const data_from_child=(id,category)=>{
     setId(id);
     setCate(category);
   }
   // const [cate,setCate]=useState(null)
   const data_from_child1=(id,category,ref)=>{
-    setId(id);
-    setCate(category);
+    setLId(id);
+    setLcate(category);
     setSend_ref(ref);
 
   }
@@ -49,7 +51,7 @@ function App() {
         <Route
           exact
           path="/AddListing"
-          element={send_ref&&<AddListing id={id} cate={cate} send_ref={send_ref}/>}
+          element={send_ref&&<AddListing id={lid} cate={lcate} send_ref={send_ref}/>}
         ></Route>
       </Routes>
     </Router>

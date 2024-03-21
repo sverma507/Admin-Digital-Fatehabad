@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { getFirestore, addDoc, updateDoc, setDoc } from "firebase/firestore";
-import { collection, deleteDoc, getDocs, getDoc, doc } from "firebase/firestore";
-import { app } from "../../Firebase";
+import { addDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, getDocs,doc } from "firebase/firestore";
+// import { app } from "../../Firebase";
+import './AddListing.css'
 function AddListing(props) {
     const [list, setList] = useState(null);
     const [popup, setPopup] = useState(false);
@@ -104,14 +105,14 @@ function AddListing(props) {
 
         <div className="addmenu-outer">
             <div className="category-heading">Listing</div>
-            <div className={popup ? "popup-form-show" : "popup-form-hidden"}>
-                <div className="popup-1">
-                    <div className=" addcte-heading">{popup_text}</div>
+            <div className={popup ? "popup-f-show" : "popup-f-hidden"}>
+                <div className="p-1">
+                    <div className=" addcate-heading">{popup_text}</div>
                     <div className="cross-btn" onClick={go_cancel}>
                         <i class="fa-solid fa-x"></i>
                     </div>
                 </div>
-                <div className="popup-2">
+                <div className="p-2">
                     <input
                         type="text"
                         placeholder="Add List"
@@ -121,7 +122,7 @@ function AddListing(props) {
                         required
                     />
                 </div>
-                <div className="popup-3">
+                <div className="p-3">
                     <div className="submit-btn" onClick={callupdate ? update_cate : () => { valid(props.id) }}>
                         Submit
                     </div>
