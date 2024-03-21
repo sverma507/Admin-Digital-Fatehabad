@@ -5,10 +5,21 @@ import Home from "./Components/Home/Home";
 import Menu from "./Components/Menu/Menu";
 import AddCategory from "./Components/AddCategory/AddCategory"
 import Addsubcategory from './Components/SubCategory/Addsubcategory'
+import AddListing from "./Components/Listing/AddListing";
 function App() {
   const [id,setId]=useState(null);
-  const data_from_child=(id)=>{
+  const [cate,setCate]=useState(null)
+  const [send_ref,setSend_ref]=useState(null)
+  const data_from_child=(id,category)=>{
     setId(id);
+    setCate(category);
+  }
+  // const [cate,setCate]=useState(null)
+  const data_from_child1=(id,category,ref)=>{
+    setId(id);
+    setCate(category);
+    setSend_ref(ref);
+
   }
   return (
     <Router>
@@ -33,7 +44,12 @@ function App() {
         <Route
           exact
           path="/Addsubcategory"
-          element={id&&<Addsubcategory id={id}/>}
+          element={id&&<Addsubcategory data_from_parent1={data_from_child1} id={id} cate={cate}/>}
+        ></Route>
+        <Route
+          exact
+          path="/AddListing"
+          element={send_ref&&<AddListing id={id} cate={cate} send_ref={send_ref}/>}
         ></Route>
       </Routes>
     </Router>

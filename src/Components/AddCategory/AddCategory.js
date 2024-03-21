@@ -5,8 +5,8 @@ import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import { app } from "../../Firebase";
 import { useNavigate } from "react-router-dom";
 function AddCategory(props) {
-    const navigate=useNavigate();
-    const [list,setList]=useState(null);
+  const navigate=useNavigate();
+  const [list,setList]=useState(null);
   const [popup, setPopup] = useState(false);
   const [popup_text,setPopup_text]=useState('');
   const [callupdate,setCallupdate]=useState(false);
@@ -17,18 +17,18 @@ function AddCategory(props) {
   }, [input]);
 
  const get = async () => {
-    const db = getFirestore(app);
-    const docref = collection(db, "categories");
-    const snapshot = await getDocs(docref);
-    console.log("shot=>",snapshot);
-    const data = snapshot.docs.map((item) => {
-      return (
+    const db=getFirestore(app);
+    const docref=collection(db,'categories');
+    const snapshot= await getDocs(docref);
+    console.log("snapshot=>",snapshot);
+    const data=snapshot.docs.map((item)=>{
+      return(
         {
-            id: item.id,
-            ...item.data(),
+          id:item.id,
+          ...item.data(),
         }
-    )
-    });
+      )
+    })
     setList(data);
   };
 
@@ -54,52 +54,52 @@ function AddCategory(props) {
   };
 
   const go_submit = () => {
-    const db = getFirestore(app);
-    addDoc(collection(db, "categories"), { category:input ,subcategory:[]});
-    // console.log(input);
+    // console.log(input);    
+    const db=getFirestore(app);
+    addDoc(collection(db,'categories'),{category:input})
     setPopup(false);
     setInput("");
     setPopup_text("");
   };
 
   const go_delete=async (id)=>{
-        const db=getFirestore(app);
-        const myref= doc(db,'categories',id);
-        try{
-                await deleteDoc(myref);
-                get();
-        }
-        catch(err)
-        {
-            console.log(err);
-        }
+    const db=getFirestore(app);
+    const docref=doc(db,'categories',id)
+    try{
+          await deleteDoc(docref);
+          get();
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+    
   }
 
-  const go_update=async(index,id)=>{
+  const go_update=async(id,idx)=>{
     setPopup(true);
     setPopup_text("UPDATE CATEGORY")
-    setInput(list[index].category);
+    setInput(list[idx].category);
     setUpdateid(id);
     setCallupdate(true);
   }
 
-  const update=async()=>{
+  const update_cate=async()=>{
     const db=getFirestore(app);
-    const myref=doc(db,'categories',updateid);
-   
-    
+    const docref=doc(db,'categories',updateid)
     if(input!=='')
     {
         setPopup(false);
         try{
-            await updateDoc(myref,{category:`${input}`})
+               await updateDoc(docref,{category:input})
+               get();
         }
         catch(err)
         {
-            console.log(err);
+          console.log(err);
         }
         setInput("");
-        setUpdateid(null);
+        setUpdateid('');
     }
     else
     {
@@ -109,8 +109,8 @@ function AddCategory(props) {
     
   }
 
-  const go_addsubcategory=(id)=>{
-    props.data_from_parent(id);
+  const go_addsubcategory=(id,cate)=>{
+    props.data_from_parent(id,cate);
     navigate('/Addsubcategory')
   }
   return (
@@ -134,7 +134,7 @@ function AddCategory(props) {
           />
         </div>
         <div className="popup-3">
-          <div className="submit-btn" onClick={callupdate?update :valid}>
+          <div className="submit-btn" onClick={callupdate?update_cate :valid}>
             Submit
           </div>
           <div className="cancel-btn" onClick={go_cancel}>
@@ -160,16 +160,17 @@ function AddCategory(props) {
                 <th>Actions</th>
             </tr>
             {
-                list &&list.map((item,index)=>{
+                list&&list.map((item,index)=>{
+                  // console.log("list=>",list);
                     return(
                            <tr className="table-row">
                             <td className="table-col col-1">{index+1}</td>
                             <td className="table-col col-2">{item.category}</td>
                             <td className="table-col col-3">
                                 <div className="action-icons" onClick={()=>{go_delete(item.id)}}><i class="fa-solid fa-trash"></i></div>
-                                <div className="action-icons" onClick={()=>{go_update(index,item.id)}}><i class="fa-regular fa-pen-to-square"></i></div>
+                                <div className="action-icons" onClick={()=>{go_update(item.id,index)}}><i class="fa-regular fa-pen-to-square"></i></div>
                                 <div>
-                                    <button className="subcategory-btn" onClick={()=>{go_addsubcategory(item.id)}}>Add Sub Category</button>
+                                    <button className="subcategory-btn" onClick={()=>{go_addsubcategory(item.id,item.category)}}>Add Sub Category</button>
                                 </div>
                             </td>
                         </tr>
