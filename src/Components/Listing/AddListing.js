@@ -1,23 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { addDoc, updateDoc } from "firebase/firestore";
 import { collection, deleteDoc, getDocs,doc } from "firebase/firestore";
-// import { app } from "../../Firebase";
 import './AddListing.css'
 function AddListing(props) {
+    const [input,setInput]=useState('')
+    let obj= {
+        name:"",
+        bname:"",
+        bcategory:"",
+        bowner:"",
+        baddress:"",
+        bm_number:"",
+        balternate_m_number:"",
+    }
+    let [info,setInfo]=useState(
+        {
+            name:"",
+            bname:"",
+            bcategory:"",
+            bowner:"",
+            baddress:"",
+            bm_number:"",
+            balternate_m_number:"",
+        })
     const [list, setList] = useState(null);
     const [popup, setPopup] = useState(false);
     const [popup_text, setPopup_text] = useState('');
     const [callupdate, setCallupdate] = useState(false);
     const [updateid, setUpdateid] = useState('');
-    const [input, setInput] = useState('');
     useEffect(() => {
         get();
-    }, [input]);
+    }, [info]);
 
     const get = async () => {
-
+        console.log("called");
         const subcateref = collection(props.send_ref, props.cate);
         const snapshot = await getDocs(subcateref);
+        console.log("snapshot=>",snapshot);
         const data = snapshot.docs.map((item) => {
             return (
                 {
@@ -27,7 +46,8 @@ function AddListing(props) {
             )
         })
         setList(data);
-        console.log("link=>", props.send_ref)
+        console.log("data=>",data);
+        // console.log("link=>", props.send_ref)
     };
 
     const go_addcategory = () => {
@@ -36,7 +56,11 @@ function AddListing(props) {
     };
 
     const go_input = (e) => {
-        setInput(e.target.value);
+        const {name,value}=e.target;
+        setInfo(prevState=>({
+            ...prevState,
+            [name]:value
+        }))
     };
 
     const go_cancel = () => {
@@ -44,7 +68,7 @@ function AddListing(props) {
     };
 
     const valid = () => {
-        if (input !== "") {
+        if (info.name !== "") {
             go_submit();
         } else {
             window.alert("Category cant't be empty!!!");
@@ -53,9 +77,9 @@ function AddListing(props) {
 
     const go_submit = async () => {
         const subcateref = collection(props.send_ref, props.cate);
-        await addDoc(subcateref, { list: input });
+        await addDoc(subcateref, {info});
         setPopup(false);
-        setInput("");
+        setInfo(obj);
         setPopup_text("");
     };
 
@@ -68,7 +92,6 @@ function AddListing(props) {
             get();
         }
         catch (err) {
-
             console.log(err);
         }
 
@@ -77,7 +100,7 @@ function AddListing(props) {
     const go_update = async (id, idx) => {
         setPopup(true);
         setPopup_text("UPDATE LIST")
-        setInput(list[idx].list);
+        setInfo(list[idx].info);
         setUpdateid(id);
         setCallupdate(true);
     }
@@ -85,20 +108,20 @@ function AddListing(props) {
     const update_cate = async () => {
         const subcateref = collection(props.send_ref, props.cate);
         const updt_ref = doc(subcateref, `${updateid}`);
-        if (input !== '') {
+        if ((info.name !== '')&&(info.bname !== '')&&(info.bcategory !== '')&&(info.bowner !== '')&&(info.baddress !== '')&&(info.bm_number !== '')&&(info.balternate_m_number !== '')) {
             setPopup(false);
             try {
-                await updateDoc(updt_ref, { list: input })
+                await updateDoc(updt_ref, { info: info })
                 get();
             }
             catch (err) {
                 console.log(err);
             }
-            setInput("");
+            setInfo(obj);
             setUpdateid('');
         }
         else {
-            window.alert("Category can't be empty!!!");
+            window.alert("Must Fill All The Fields");
         }
     }
     return (
@@ -113,14 +136,90 @@ function AddListing(props) {
                     </div>
                 </div>
                 <div className="p-2">
-                    <input
-                        type="text"
-                        placeholder="Add List"
-                        value={input}
-                        onChange={go_input}
-                        className="popup-2-input"
-                        required
-                    />
+                    <div>
+                        <div><label className="form-label">Your Name *</label></div>
+                        <input
+                            type="text"
+                            placeholder="Name..."
+                            value={info.name}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="name"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Bussiness Name *</label></div>
+                        <input
+                            type="text"
+                            placeholder="Bussiness Name..."
+                            value={info.bname}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="bname"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Bussiness Category *</label></div>
+                        <input
+                            type="text"
+                            placeholder="Bussiness Category..."
+                            value={info.bcategory}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="bcategory"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Bussiness Owner Name *</label></div>
+                        <input
+                            type="text"
+                            placeholder="Bussiness Owner Name..."
+                            value={info.bowner}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="bowner"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Bussiness Address *</label></div>
+                        <textarea
+
+                            type="text"
+                            placeholder="Bussiness Address..."
+                            value={info.baddress}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="baddress"
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Mobile Number *</label></div>
+                        <input
+
+                            type="number"
+                            placeholder="Mobile Number.."
+                            value={info.bm_number}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="bm_number"
+                        />
+                    </div>
+                    <div>
+                        <div><label className="form-label">Alternate Mobile Number *</label></div>
+                        <input
+
+                            type="number"
+                            placeholder="Alternate Mobile Number.."
+                            value={info.balternate_m_number}
+                            onChange={go_input}
+                            className="popup-2-input"
+                            name="balternate_m_number"
+                        />
+                    </div>
                 </div>
                 <div className="p-3">
                     <div className="submit-btn" onClick={callupdate ? update_cate : () => { valid(props.id) }}>
@@ -150,16 +249,15 @@ function AddListing(props) {
                         </tr>
                         {
                             list && list.map((item, index) => {
-                                // console.log("list=>", list);
+                                console.log("list=>", list);
                                 return (
                                     <tr className="table-row">
                                         <td className="table-col col-1">{index + 1}</td>
-                                        <td className="table-col col-2">{item.list}</td>
+                                        <td className="table-col col-2">{item.info.name}</td>
                                         <td className="table-col col-3">
                                             <div className="action-icons" onClick={() => { go_delete(item.id) }}><i class="fa-solid fa-trash"></i></div>
                                             <div className="action-icons" onClick={() => { go_update(item.id, index) }}><i class="fa-regular fa-pen-to-square"></i></div>
                                             <div>
-                                                {/* <button className="subcategory-btn" onClick={() => { go_addlisting(item.id,item.subcategory) }}>Add Listing</button>               */}
                                             </div>
                                         </td>
                                     </tr>

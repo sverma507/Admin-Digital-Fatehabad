@@ -20,7 +20,7 @@ function AddCategory(props) {
     const db=getFirestore(app);
     const docref=collection(db,'categories');
     const snapshot= await getDocs(docref);
-    console.log("snapshot=>",snapshot);
+    // console.log("snapshot=>",snapshot);
     const data=snapshot.docs.map((item)=>{
       return(
         {
