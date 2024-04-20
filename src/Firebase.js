@@ -7,6 +7,6 @@ const firebaseConfig = {
   messagingSenderId: "1067124179064",
   appId: "1:1067124179064:web:2565f23cbb382ca0dfed8d",
   measurementId: "G-4S8WYYEH3L",
-  databaseUrl:"https://admin-digital-fatehabad-default-rtdb.firebaseio.com/"
+  // databaseUrl:"https://admin-digital-fatehabad-default-rtdb.firebaseio.com/"
 };
 export const app = initializeApp(firebaseConfig);

@@ -14,7 +14,7 @@ function AddsubCategory(props) {
   const [callupdate, setCallupdate] = useState(false);
   const [updateid, setUpdateid] = useState('');
   const [input, setInput] = useState('');
-  const [array, setArray] = useState(["try"]);
+  const [togglebtn,setTogglebtn] = useState(false);
   useEffect(() => {
     get();
   }, [input]);
@@ -51,6 +51,10 @@ function AddsubCategory(props) {
     setInput(e.target.value);
   };
 
+  const go_toggle=(e)=>{
+    setTogglebtn(e.target.checked)
+  }
+
   const go_cancel = () => {
     setPopup(false);
   };
@@ -68,7 +72,7 @@ function AddsubCategory(props) {
     const cateref = collection(db, 'categories');
     const docRef = doc(cateref, props.id);
     const subcateref = collection(docRef, props.cate);
-    addDoc(subcateref, { subcategory: input });
+    addDoc(subcateref, { subcategory: input,popular:togglebtn });
     // const subcateref=collection(cateref,`${props.id}`,`${props.cate}`);
     try {
       // addDoc(collection(subcateref,`${input}`,`${input}`),{subcategory:input});
@@ -78,6 +82,7 @@ function AddsubCategory(props) {
     }
     setPopup(false);
     setInput("");
+    setTogglebtn(false);
     setPopup_text("");
   };
 
@@ -157,6 +162,11 @@ function AddsubCategory(props) {
             className="popup-2-input"
             required
           />
+        <label class="inline-flex items-center cursor-pointer mt-6">
+          <input type="checkbox" value={togglebtn} onChange={go_toggle} class="sr-only peer" checked={togglebtn}/>
+          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Is Featured</span>
+        </label>
         </div>
         <div className="popup-3">
           <div className="submit-btn" onClick={callupdate ? update_cate : () => { valid(props.id) }}>

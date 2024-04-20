@@ -4,6 +4,9 @@ import { getFirestore, addDoc, updateDoc } from "firebase/firestore";
 import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import { app } from "../../Firebase";
 import { useNavigate } from "react-router-dom";
+let temp={inputbox:'',isfeatured:false}
+
+
 function AddCategory(props) {
   const navigate=useNavigate();
   const [list,setList]=useState(null);
@@ -12,6 +15,8 @@ function AddCategory(props) {
   const [callupdate,setCallupdate]=useState(false);
   const [updateid,setUpdateid]=useState('');
   const [input, setInput] = useState('');
+  const [togglebtn,setTogglebtn] = useState(false);
+  // const [isfeatured,setIsfeatured]=useState(false);
   useEffect(() => {
     get();
   }, [input]);
@@ -33,13 +38,20 @@ function AddCategory(props) {
   };
 
   const go_addcategory = () => {
+    // console.log("toggel.add=>",togglebtn);
     setPopup(true);
     setPopup_text('ADD CATEGORY');
   };
 
   const go_input = (e) => {
-    setInput(e.target.value);
+   setInput(e.target.value);
   };
+
+  const go_toggle =(e) => {
+    // console.log("traget=>",e.target.checked);
+    setTogglebtn(e.target.checked);
+    // console.log("toggle=>",togglebtn);
+   };
 
   const go_cancel = () => {
     setPopup(false);
@@ -55,10 +67,12 @@ function AddCategory(props) {
 
   const go_submit = () => {
     // console.log(input);    
+    // console.log("toggle=>",togglebtn);
     const db=getFirestore(app);
-    addDoc(collection(db,'categories'),{category:input})
+    addDoc(collection(db,'categories'),{category:input,popular:togglebtn})
     setPopup(false);
     setInput("");
+    setTogglebtn(false);
     setPopup_text("");
   };
 
@@ -113,6 +127,8 @@ function AddCategory(props) {
     props.data_from_parent(id,cate);
     navigate('/Addsubcategory')
   }
+
+
   return (
     <div className="addmenu-outer">
       <div className="category-heading">Category</div>
@@ -127,11 +143,17 @@ function AddCategory(props) {
           <input
             type="text"
             placeholder="Add Category"
+            
             value={input}
             onChange={go_input}
             className="popup-2-input"
             required
           />
+         <label class="inline-flex items-center cursor-pointer mt-6">
+          <input type="checkbox" value={togglebtn} onChange={go_toggle} class="sr-only peer" checked={togglebtn}/>
+          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Is Featured</span>
+        </label>
         </div>
         <div className="popup-3">
           <div className="submit-btn" onClick={callupdate?update_cate :valid}>

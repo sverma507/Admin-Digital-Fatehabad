@@ -58,6 +58,8 @@
 .popup-2{
     height: 100px;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     padding: 20px;
 }

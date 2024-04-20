@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { addDoc, updateDoc } from "firebase/firestore";
 import { collection, deleteDoc, getDocs,doc } from "firebase/firestore";
 import './AddListing.css'
+import { app } from "../../Firebase";
+import { getFirestore } from "firebase/firestore";
 function AddListing(props) {
+    const [togglebtn,setTogglebtn]=useState(false);
     const [input,setInput]=useState('')
     let obj= {
         name:"",
@@ -12,6 +15,7 @@ function AddListing(props) {
         baddress:"",
         bm_number:"",
         balternate_m_number:"",
+        popular:false,
     }
     let [info,setInfo]=useState(
         {
@@ -22,6 +26,7 @@ function AddListing(props) {
             baddress:"",
             bm_number:"",
             balternate_m_number:"",
+            popular:togglebtn,
         })
     const [list, setList] = useState(null);
     const [popup, setPopup] = useState(false);
@@ -33,10 +38,10 @@ function AddListing(props) {
     }, [info]);
 
     const get = async () => {
-        console.log("called");
+        // console.log("called");
         const subcateref = collection(props.send_ref, props.cate);
         const snapshot = await getDocs(subcateref);
-        console.log("snapshot=>",snapshot);
+        // console.log("snapshot=>",snapshot);
         const data = snapshot.docs.map((item) => {
             return (
                 {
@@ -46,7 +51,7 @@ function AddListing(props) {
             )
         })
         setList(data);
-        console.log("data=>",data);
+        // console.log("data=>",data);
         // console.log("link=>", props.send_ref)
     };
 
@@ -63,6 +68,9 @@ function AddListing(props) {
         }))
     };
 
+    const go_toggle=(e)=>{
+        setTogglebtn(e.target.checked)
+    }
     const go_cancel = () => {
         setPopup(false);
     };
@@ -76,11 +84,20 @@ function AddListing(props) {
     };
 
     const go_submit = async () => {
+        const data = {
+            ...info,
+            popular: togglebtn, 
+        };
+        console.log("info=>",info);
+        const db=getFirestore(app);
+        addDoc(collection(db,'all_lists'),{data})
         const subcateref = collection(props.send_ref, props.cate);
-        await addDoc(subcateref, {info});
+        await addDoc(subcateref, {data});
         setPopup(false);
+        setTogglebtn(false);
         setInfo(obj);
         setPopup_text("");
+        
     };
 
     const go_delete = async (id) => {
@@ -219,7 +236,13 @@ function AddListing(props) {
                             className="popup-2-input"
                             name="balternate_m_number"
                         />
+                       
                     </div>
+                    <label class="inline-flex items-center cursor-pointer mt-6">
+                            <input type="checkbox" value={togglebtn}  onChange={go_toggle} class="sr-only peer" checked={togglebtn}/>
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Is Featured</span>
+                    </label>
                 </div>
                 <div className="p-3">
                     <div className="submit-btn" onClick={callupdate ? update_cate : () => { valid(props.id) }}>
@@ -249,11 +272,11 @@ function AddListing(props) {
                         </tr>
                         {
                             list && list.map((item, index) => {
-                                console.log("list=>", list);
+                                // console.log("list=>", list);
                                 return (
                                     <tr className="table-row">
                                         <td className="table-col col-1">{index + 1}</td>
-                                        <td className="table-col col-2">{item.info.name}</td>
+                                        <td className="table-col col-2">{item.data.name}</td>
                                         <td className="table-col col-3">
                                             <div className="action-icons" onClick={() => { go_delete(item.id) }}><i class="fa-solid fa-trash"></i></div>
                                             <div className="action-icons" onClick={() => { go_update(item.id, index) }}><i class="fa-regular fa-pen-to-square"></i></div>
